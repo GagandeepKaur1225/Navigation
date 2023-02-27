@@ -51,28 +51,25 @@ const Screen_navigated = ({ navigation,route }) => {
             console.log(similaritem);
             // setStringsearch(value);
         }
+        else if(value == ""){
+            setSimilaritem(datawhole);
+        }
         else {
             // setSimilaritem(value);
             setStringsearch("");
         }
     }
-    let timer;
-    const debounce = (func) => {
-        return function (...args) {
-            const context = this;
-            if (timer) clearTimeout(timer);
-            timer = setTimeout(() => {
-                timer = null;
-                func.apply(context, args);
-            }, 500);
-        };
-    };
-    const optimizedFn = (val) => {
-        console.log(val, "value changed");
-        (debounce(filteringItems(val)), []);
-        setStringsearch(val);
-
-    };
+    useEffect(() => {
+        const getData = setTimeout(() =>
+            //    { setStringsearch(value);
+            filteringItems(stringsearch),
+            500);
+        console.log(stringsearch);
+        
+        return () => {
+            clearTimeout(getData);
+        }
+    }, [stringsearch])
     const ItemView = ({item} ) => {
         // console.log(item,"SIMILAR");
         
@@ -80,9 +77,9 @@ const Screen_navigated = ({ navigation,route }) => {
             <TouchableOpacity style={style.textStyle}
                 onPress={() =>
                     getItem(item)
-
+                    
                 }
-            ><Text>
+                ><Text>
                 {item}
                
                 </Text> 
@@ -90,25 +87,25 @@ const Screen_navigated = ({ navigation,route }) => {
         </View>);
     };
     const getItem = (item) => {
-
+        
         alert(item);
     };
     const ItemSeparatorView = () => {
         return (
-          
-          <View
-                style={style.itemview}
-          />
-        );
-      };
-    
-    return (
-        <View style={{flex:1}}>
+            
+            <View
+            style={style.itemview}
+            />
+            );
+        };
+        
+        return (
+            <View style={{flex:1}}>
             <View style={style.view_style}>
                 <Text style={style.heading}>SELECT ANY CITY</Text>
                 <TextInput
                     style={style.textinp}
-                    onChangeText={(val) => optimizedFn(val)
+                    onChangeText={ (value) => setStringsearch(value)
                     }
                     // value={stringsearch}
                     placeholder="search here" />
@@ -161,7 +158,25 @@ const style = StyleSheet.create(
             padding: 10,
         }
     }
-)
-
-
-
+    )
+    
+    
+    
+    
+    // let timer;
+    // const debounce = (func) => {
+    //     return function (...args) {
+    //         const context = this;
+    //         if (timer) clearTimeout(timer);
+    //         timer = setTimeout(() => {
+    //             timer = null;
+    //             func.apply(context, args);
+    //         }, 500);
+    //     };
+    // };
+    // const optimizedFn = (val) => {
+    //     console.log(val, "value changed");
+    //     (debounce(filteringItems(val)), []);
+    //     setStringsearch(val);
+    
+    // };

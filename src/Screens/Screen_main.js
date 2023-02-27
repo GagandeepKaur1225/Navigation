@@ -40,30 +40,26 @@ const Screen_main = () => {
             console.log(newItem);
             setSimilaritem(newItem);
             console.log(similaritem);
-            // 
+            setStringsearch(value);
+        }
+        else if(value == ""){
+            setSimilaritem(datawhole);
         }
         else {
-            // setSimilaritem(value);
+            //IndsetSimilaritem(value);
             setStringsearch("");
         }
     }
-    const debounce = (func) => {
-        let timer;
-        return function (...args) {
-            const context = this;
-            if (timer) clearTimeout(timer);
-            timer = setTimeout(() => {
-                timer = null;
-                func.apply(context, args);
-            }, 500);
-        };
-    };
-    const optimizedFn = (val) => {
-        console.log(val, "value changed")
-        setStringsearch(val);
-        (debounce(filteringItems(val)), []);
+    useEffect(() => {
+        const getData = setTimeout(() =>
+            //    { setStringsearch(value);
+            filteringItems(stringsearch),
+            500);
+        console.log(stringsearch);
+        
+        return () => clearTimeout(getData)
+    }, [stringsearch])
 
-    };
     const ItemView = ({item} ) => {
         // console.log(item,"SIMILAR");
         
@@ -99,7 +95,7 @@ const Screen_main = () => {
                 <Text style={style.heading}>SELECT ANY COUNTRY</Text>
                 <TextInput
                     style={style.textinp}
-                    onChangeText={(val) => optimizedFn(val)
+                    onChangeText={(value) => setStringsearch(value)
                     }
                     // value={stringsearch}
                     placeholder="search here" />
@@ -168,3 +164,24 @@ const style = StyleSheet.create(
                     // useEffect(() =>
                     //     const timer=setTimeout()
                     // )
+                    // useEffect(() => {
+                        //     const timer = setTimeout(() => filteringItems(stringsearch), 1000);
+                        //     return () => clearTimeout(timer);
+                        //   }, [stringsearch]);
+                        // const debounce = (func) => {
+                        //     let timer;
+                        //     return function (...args) {
+                        //         const context = this;
+                        //         if (timer) clearTimeout(timer);
+                        //         timer = setTimeout(() => {
+                        //             timer = null;
+                        //             func.apply(context, args);
+                        //         }, 100);
+                        //     };
+                        // };
+                        // const optimizedFn = (val) => {
+                        //     console.log(val, "value changed")
+                        //     // setStringsearch(val);
+                        //     (debounce(filteringItems(val)), []);
+                        
+                        // };
