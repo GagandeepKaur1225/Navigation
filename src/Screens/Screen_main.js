@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, TextInput, FlatList,TouchableOpacity } from 'react-native'
-import { NavigationContainer, useNavigation, useRoute } from '@react-navigation/native';
+import { NavigationContainer, useNavigation} from '@react-navigation/native';
 
 
 const Screen_main = () => {
@@ -57,7 +57,7 @@ const Screen_main = () => {
                 }
             ><Text>
                 {item?.name}
-                {'.'}
+                  
                 </Text> 
              </TouchableOpacity>
         </View>);
@@ -78,7 +78,7 @@ const Screen_main = () => {
     return (
         <View style={{flex:1}}>
             <View style={style.view_style}>
-                <Text style={style.heading}>SELECT ANY CAPITAL</Text>
+                <Text style={style.heading}>SELECT ANY COUNTRY</Text>
                 <TextInput
                     style={style.textinp}
                     onChangeText={(val) => filteringItems(val)

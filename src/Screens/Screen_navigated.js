@@ -1,9 +1,11 @@
 import { useRoute} from '@react-navigation/core';
 import React, { useEffect,useState } from 'react'
-import { View, Text,StyleSheet,TextInput,TouchableOpacity,Flatlist } from 'react-native'
+import { View, Text,StyleSheet,TextInput,TouchableOpacity,FlatList } from 'react-native'
 
 const Screen_navigated = ({ navigation,route }) => {
     const params = useRoute();
+    const name = route.params.item.name;
+    console.log(name);
     console.log(route, "hello");
     const [stringsearch, setStringsearch] = useState('');
     const [similaritem, setSimilaritem] = useState([]);
@@ -12,29 +14,36 @@ const Screen_navigated = ({ navigation,route }) => {
         var requestOptions = {
             method: 'POST',
             redirect: 'follow',
-            country:route.params.item.name,
+            body: JSON.stringify({
+                country: name,
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+              },
         };
 
-        fetch("https://countriesnow.space/api/v0.1/countries/capital", requestOptions)
-            .then(response => response.text())
-            .then(result => {
-                resultparse = JSON.parse(result);
-                console.log(JSON.parse(result), "RESULT");
-                setSimilaritem(resultparse?.data);
-                setDatawhole(resultparse?.data);
-            }
-                )
-            .catch(error => console.log('error', error));
+      
+        fetch("https://countriesnow.space/api/v0.1/countries/cities", requestOptions)
+            .then(response => response.json())
+            .then((res) => {
+                console.log(res);
+                setDatawhole(res?.data);
+                setSimilaritem(res?.data);
+                console.log(datawhole);
+                console.log(similaritem);
+            })
+  .catch(error => console.log('error', error));
+        
     }, []);
     const filteringItems = (value) => {
-        
+        console.log("inside filter ");
         if (value) {
             console.log("displaying similar")
             console.log(similaritem);
             console.log(datawhole);
             function filterdemo(item)  {
                 console.log("in filter function");
-               return item?.capital.toLowerCase().indexOf(value.toLowerCase()) > -1 ? 1 : 0;
+               return item.toLowerCase().indexOf(value.toLowerCase()) > -1 ? 1 : 0;
             }
             const newItem = datawhole.filter(filterdemo);
             console.log(newItem);
@@ -53,19 +62,19 @@ const Screen_navigated = ({ navigation,route }) => {
         return (<View>
             <TouchableOpacity style={style.textStyle}
                 onPress={() =>
-                    getItem()
+                    getItem(item)
 
                 }
             ><Text>
-                {item?.name}
-                {'.'}
+                {item}
+               
                 </Text> 
              </TouchableOpacity>
         </View>);
     };
     const getItem = (item) => {
 
-        alert( item?.capital);
+        alert(item);
     };
     const ItemSeparatorView = () => {
         return (
@@ -79,7 +88,7 @@ const Screen_navigated = ({ navigation,route }) => {
     return (
         <View style={{flex:1}}>
             <View style={style.view_style}>
-                <Text style={style.heading}>SELECT ANY CAPITAL</Text>
+                <Text style={style.heading}>SELECT ANY CITY</Text>
                 <TextInput
                     style={style.textinp}
                     onChangeText={(val) => filteringItems(val)
