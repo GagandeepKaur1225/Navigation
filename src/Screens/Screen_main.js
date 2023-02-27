@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useCallback } from 'react'
 import { View, Text, StyleSheet, TextInput, FlatList,TouchableOpacity } from 'react-native'
-import { NavigationContainer, useNavigation} from '@react-navigation/native';
+import { useNavigation} from '@react-navigation/native';
 
 
 const Screen_main = () => {
@@ -8,6 +8,7 @@ const Screen_main = () => {
     const [stringsearch, setStringsearch] = useState('');
     const [similaritem, setSimilaritem] = useState([]);
     const [datawhole, setDatawhole] = useState([]);
+    
     useEffect(() => {
         var requestOptions = {
             method: 'GET',
@@ -24,7 +25,7 @@ const Screen_main = () => {
                 setDatawhole(resultparse?.data);
               })
               .catch(error => console.log('error', error));
-    }, []);
+    },[]);
     const filteringItems = (value) => {
         
         if (value) {
@@ -39,13 +40,30 @@ const Screen_main = () => {
             console.log(newItem);
             setSimilaritem(newItem);
             console.log(similaritem);
-            setStringsearch(value);
+            // 
         }
         else {
-            setSimilaritem(value);
-            setStringsearch(value);
+            // setSimilaritem(value);
+            setStringsearch("");
         }
     }
+    const debounce = (func) => {
+        let timer;
+        return function (...args) {
+            const context = this;
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(() => {
+                timer = null;
+                func.apply(context, args);
+            }, 500);
+        };
+    };
+    const optimizedFn = (val) => {
+        console.log(val, "value changed")
+        setStringsearch(val);
+        (debounce(filteringItems(val)), []);
+
+    };
     const ItemView = ({item} ) => {
         // console.log(item,"SIMILAR");
         
@@ -53,9 +71,9 @@ const Screen_main = () => {
             <TouchableOpacity style={style.textStyle}
                 onPress={() =>
                     navigation.navigate('Screen_for_cities', {item:item})
-
+                    
                 }
-            ><Text>
+                ><Text>
                 {item?.name}
                   
                 </Text> 
@@ -63,27 +81,27 @@ const Screen_main = () => {
         </View>);
     };
     const getItem = (item) => {
-
+        
         alert( item?.capital);
     };
     const ItemSeparatorView = () => {
         return (
-          
-          <View
-                style={style.itemview}
-          />
-        );
-      };
-    
-    return (
-        <View style={{flex:1}}>
+            
+            <View
+            style={style.itemview}
+            />
+            );
+        };
+        
+        return (
+            <View style={{flex:1}}>
             <View style={style.view_style}>
                 <Text style={style.heading}>SELECT ANY COUNTRY</Text>
                 <TextInput
                     style={style.textinp}
-                    onChangeText={(val) => filteringItems(val)
+                    onChangeText={(val) => optimizedFn(val)
                     }
-                    value={stringsearch}
+                    // value={stringsearch}
                     placeholder="search here" />
                 {console.log(similaritem, 'similaritem?.data')}
                 <View style={{flex:1}}>
@@ -107,8 +125,7 @@ const style = StyleSheet.create(
             width: '100%',
             alignItems: 'center',
             height: 800,
-            marginTop: 30,
-            // flex: 1
+            marginTop: 30
         },
         textinp: {
             height: 40,
@@ -128,10 +145,26 @@ const style = StyleSheet.create(
             borderWidth: 1,
             borderRadius:2,
             height: 50,
-            padding:10,width:350
+            padding: 10,
+            width: 350
         },
         heading: {
             padding: 10,
         }
     }
-)
+    )
+    // function debounce(value, delay) {
+        //     const [debounceValue, setDebounceValue] = useState[value];
+        //     useEffect(() => {
+            //         const handler = setTimeout(() => {
+                //             setDebounceValue(value);
+                //         }, delay);
+                //         return (() => {
+                    //             clearTimeout(handler);
+                    //         })
+                    //     }, [value, delay]);
+                    //     return debounceValue;
+                    // }
+                    // useEffect(() =>
+                    //     const timer=setTimeout()
+                    // )

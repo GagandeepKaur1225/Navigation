@@ -49,13 +49,30 @@ const Screen_navigated = ({ navigation,route }) => {
             console.log(newItem);
             setSimilaritem(newItem);
             console.log(similaritem);
-            setStringsearch(value);
+            // setStringsearch(value);
         }
         else {
-            setSimilaritem(value);
-            setStringsearch(value);
+            // setSimilaritem(value);
+            setStringsearch("");
         }
     }
+    let timer;
+    const debounce = (func) => {
+        return function (...args) {
+            const context = this;
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(() => {
+                timer = null;
+                func.apply(context, args);
+            }, 500);
+        };
+    };
+    const optimizedFn = (val) => {
+        console.log(val, "value changed");
+        (debounce(filteringItems(val)), []);
+        setStringsearch(val);
+
+    };
     const ItemView = ({item} ) => {
         // console.log(item,"SIMILAR");
         
@@ -91,9 +108,9 @@ const Screen_navigated = ({ navigation,route }) => {
                 <Text style={style.heading}>SELECT ANY CITY</Text>
                 <TextInput
                     style={style.textinp}
-                    onChangeText={(val) => filteringItems(val)
+                    onChangeText={(val) => optimizedFn(val)
                     }
-                    value={stringsearch}
+                    // value={stringsearch}
                     placeholder="search here" />
                 {console.log(similaritem, 'similaritem?.data')}
                 <View style={{flex:1}}>
